@@ -41,12 +41,24 @@
   /* reasons */
   #reason { min-height: 90px; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; font-style: italic; }
 
-  /* timeline */
-  .timeline { max-width: 560px; width: 100%; text-align: left; border-left: 3px solid var(--accent); padding-left: 22px; }
-  .event { margin-bottom: 28px; opacity: 0; transform: translateY(20px); transition: all .7s; }
-  .event.show { opacity: 1; transform: none; }
-  .event small { color: var(--accent); font-weight: bold; letter-spacing: .05em; }
-  .event img { width: 100%; border-radius: 14px; margin-top: 10px; display: block; }
+  /* surprise drawing */
+  .hidden { display: none; }
+  #drawingWrap { width: 100%; max-width: 380px; }
+  #drawing { width: 100%; height: auto; overflow: visible; }
+  .draw { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .go .draw { animation: drawIt 1s ease forwards; animation-delay: var(--d, 0s); }
+  @keyframes drawIt { to { stroke-dashoffset: 0; } }
+  #artwork { width: 100%; display: block; margin: 24px auto 0; border-radius: 20px; box-shadow: 0 12px 32px rgba(74,32,64,.25); opacity: 0; }
+  .go #artwork { animation: fadeIn 1.4s 4.8s forwards; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px) scale(.97); } to { opacity: 1; transform: none; } }
+  .flame, .heartfill, .spark { opacity: 0; transform-box: fill-box; transform-origin: center bottom; }
+  .flame { fill: #ffb703; }
+  .heartfill { fill: var(--accent); }
+  .go .flame { animation: pop .5s var(--d) forwards, flicker .5s calc(var(--d) + .5s) infinite alternate; }
+  .go .heartfill { animation: pop .6s 4.1s forwards; }
+  .go .spark { animation: pop .5s var(--d) forwards; }
+  @keyframes pop { from { opacity: 0; transform: scale(.3); } to { opacity: 1; transform: scale(1); } }
+  @keyframes flicker { from { transform: scale(1) rotate(-4deg); } to { transform: scale(1.12, .94) rotate(4deg); } }
 
   /* letter */
   #letter { white-space: pre-wrap; text-align: left; font-size: 1.15rem; line-height: 1.7; min-height: 220px; }
@@ -62,7 +74,6 @@
   <p class="sub" id="heroTop"></p>
   <h1>Happy Birthday,<br><span id="name"></span> 🎂</h1>
   <p class="sub">I made something just for you. Scroll down ↓</p>
-  <button id="partyBtn">Tap for a surprise 🎉</button>
 </section>
 
 <!-- 2. DAYS TOGETHER -->
@@ -75,12 +86,6 @@
     <div><b id="cSecs">0</b>seconds</div>
   </div>
   <p class="sub">…and I'd happily do every second again.</p>
-</section>
-
-<!-- 3. TIMELINE -->
-<section>
-  <h2>Our story so far</h2>
-  <div class="timeline" id="timeline"></div>
 </section>
 
 <!-- 4. REASONS -->
@@ -98,6 +103,43 @@
   <div class="card"><div id="letter"></div></div>
 </section>
 
+<!-- 6. SURPRISE -->
+<section>
+  <h2>One last thing…</h2>
+  <button id="partyBtn" style="margin-top:0">Tap for a surprise 🎉</button>
+  <div id="drawingWrap" class="hidden">
+    <svg id="drawing" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" aria-label="A birthday cake with candles and a heart">
+      <!-- plate -->
+      <path class="draw" pathLength="1" style="--d:0s" d="M30 264 H270"/>
+      <!-- bottom tier -->
+      <rect class="draw" pathLength="1" style="--d:.3s" x="60" y="204" width="180" height="60" rx="8"/>
+      <path class="draw" pathLength="1" style="--d:.9s" d="M60 220 q10 14 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0"/>
+      <!-- top tier -->
+      <rect class="draw" pathLength="1" style="--d:1.2s" x="90" y="154" width="120" height="50" rx="8"/>
+      <path class="draw" pathLength="1" style="--d:1.7s" d="M90 169 q10 14 20 0 t20 0 t20 0 t20 0 t20 0 t20 0"/>
+      <!-- candles -->
+      <path class="draw" pathLength="1" style="--d:2.1s" d="M125 154 V126"/>
+      <path class="draw" pathLength="1" style="--d:2.2s" d="M150 154 V122"/>
+      <path class="draw" pathLength="1" style="--d:2.3s" d="M175 154 V126"/>
+      <!-- flames -->
+      <path class="flame" style="--d:2.8s" d="M125 124 c-7 -9 0 -16 0 -22 c7 6 7 14 0 22z"/>
+      <path class="flame" style="--d:2.9s" d="M150 120 c-7 -9 0 -16 0 -22 c7 6 7 14 0 22z"/>
+      <path class="flame" style="--d:3s" d="M175 124 c-7 -9 0 -16 0 -22 c7 6 7 14 0 22z"/>
+      <!-- heart -->
+      <path class="draw" pathLength="1" style="--d:3.2s" d="M150 92 C100 60 120 24 150 50 C180 24 200 60 150 92 Z" transform="translate(0,-18)"/>
+      <path class="heartfill" d="M150 92 C100 60 120 24 150 50 C180 24 200 60 150 92 Z" transform="translate(0,-18)"/>
+      <!-- sparkles -->
+      <text class="spark" style="--d:4s" x="70" y="60" font-size="22">✨</text>
+      <text class="spark" style="--d:4.2s" x="220" y="70" font-size="22">✨</text>
+      <text class="spark" style="--d:4.4s" x="40" y="140" font-size="18">💖</text>
+      <text class="spark" style="--d:4.6s" x="245" y="150" font-size="18">💖</text>
+    </svg>
+    <!-- Your drawing: upload it to the repo as photos/surprise.jpg -->
+    <img id="artwork" src="photos/surprise.jpg" alt="A drawing made for you" onerror="this.style.display='none'">
+    <p class="sub" id="drawingMsg"></p>
+  </div>
+</section>
+
 <script>
 /* ============================================================
    ✏️  EDIT EVERYTHING IN THIS BLOCK TO MAKE IT HERS
@@ -109,32 +151,22 @@ const CONFIG = {
   // when you got together (YYYY-MM-DDTHH:MM:SS)
   togetherSince: "2026-02-10T00:00:00",
 
-  // Add as many as you like. "photo" is optional: put an image file next
-  // to this html file (e.g. "photos/first-date.jpg") or leave it as "".
-  timeline: [
-    { date: "Feb 14, 2023", title: "The day we met",     text: "I didn't know it yet, but my life was about to change.", photo: "" },
-    { date: "Apr 2023",     title: "Our first date",      text: "I was so nervous. You laughed at my joke and I was gone.", photo: "" },
-    { date: "Aug 2024",     title: "Our first trip",      text: "Remember when we got lost and it was the best day ever?", photo: "" },
-    { date: "Today",        title: "Your birthday 🎂",    text: "Another year of you being you. I'm so lucky.", photo: "" }
-  ],
-
   reasons: [
-    "The way you laugh at your own jokes before you finish them.",
+    "The way you laugh at your own jokes even though it's lame.",
     "You make ordinary days feel special.",
-    "You're kind to everyone, even when no one is watching.",
+    "Playing with you make my days better",
     "Your smile fixes my worst days.",
     "You believe in me when I don't.",
-    "You're my favorite person to do nothing with."
-    
+    "You're my favorite person to do nothing with.",
   ],
 
   letter:
 `My love,
 
 Happy birthday! I wanted to give you something that came from me,
-so I wrote this with my own hands (and a lot of coffee).
+so I wrote this with my own hands 
 
-Thank you for every laugh, every hug, and every moment we've shared.
+Thank you for every laugh, every talk, every gameplay with together and every moment we've shared.
 You make me want to be a better person every day.
 
 I can't wait to celebrate many more birthdays with you.
@@ -160,18 +192,6 @@ function tick() {
   document.getElementById("cSecs").textContent  = Math.floor(d / 1e3).toLocaleString();
 }
 tick(); setInterval(tick, 1000);
-
-// ---- timeline (fade in on scroll)
-const tl = document.getElementById("timeline");
-CONFIG.timeline.forEach(e => {
-  const div = document.createElement("div");
-  div.className = "event";
-  div.innerHTML = `<small>${e.date}</small><h3>${e.title}</h3><p>${e.text}</p>` +
-                  (e.photo ? `<img src="${e.photo}" alt="${e.title}">` : "");
-  tl.appendChild(div);
-});
-const io = new IntersectionObserver(es => es.forEach(x => x.isIntersecting && x.target.classList.add("show")), { threshold: .3 });
-document.querySelectorAll(".event").forEach(el => io.observe(el));
 
 // ---- reasons
 let ri = -1;
@@ -233,7 +253,13 @@ function burst(x, y, n = 150) {
   requestAnimationFrame(loop);
 })();
 document.getElementById("partyBtn").onclick = () => {
+  const wrap = document.getElementById("drawingWrap");
+  wrap.classList.remove("hidden", "go");
+  void wrap.offsetWidth;               // restart the animation if tapped again
+  wrap.classList.add("go");
+  document.getElementById("drawingMsg").textContent = "Happy Birthday, " + CONFIG.herName + "! ❤️";
   burst(innerWidth * .25, innerHeight * .6); burst(innerWidth * .75, innerHeight * .6);
+  setTimeout(() => burst(innerWidth / 2, innerHeight / 2, 200), 4200);
 };
 window.addEventListener("load", () => setTimeout(() => burst(innerWidth / 2, innerHeight / 2, 200), 500));
 </script>
